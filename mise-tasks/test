@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force yq .
+mise cache clear
+mise install yq@4.52.4
+
+# Capture and display the output while also verifying it
+output=$(mise exec "yq@4.52.4" -- "yq" --version)
+echo "yq output: ${output}"
+
+if echo "${output}" | grep -q '4.52.4'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version yq@4.52.4"
+  exit 1
+fi
